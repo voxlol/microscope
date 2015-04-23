@@ -1,6 +1,11 @@
 root = exports ? this
 root.Posts = new Mongo.Collection 'posts'
 
+# allow the edit/deletion of posts from client 
+Posts.allow
+    update: (userId,post) -> ownsDocument(userId,post)
+    remove: (userId,post) -> ownsDocument(userId,post)
+
 Meteor.methods
     # create postinsert method called from postsubmit
     postInsert: (postAttributes) ->
