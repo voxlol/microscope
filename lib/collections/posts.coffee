@@ -2,9 +2,14 @@ root = exports ? this
 root.Posts = new Mongo.Collection 'posts'
 
 # allow the edit/deletion of posts from client 
+# look like these are true/false cases to where certain post functions will work
 Posts.allow
-    update: (userId,post) -> ownsDocument(userId,post)
-    remove: (userId,post) -> ownsDocument(userId,post)
+    update: (userId,post) -> return ownsDocument(userId,post)
+    remove: (userId,post) -> return ownsDocument(userId,post)
+# ensure users can only edit specific fields (callback)
+Posts.deny
+    update: (userId,post,fieldNames) ->
+        return _.without(fieldNames,'url','title').length > 0
 
 Meteor.methods
     # create postinsert method called from postsubmit
